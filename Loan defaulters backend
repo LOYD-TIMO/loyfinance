@@ -1,3 +1,11 @@
+loyfinance/
+├── Dockerfile      ✅ (no file extension!)
+├── server.js
+├── package.json
+├── package-lock.json
+├── people.db
+├── seed.js
+└── .gitignore
 person-search/
 ├── server.js
 ├── package.json
@@ -94,3 +102,6 @@ git add .
 git commit -m "Add Dockerfile for Render"
 git push
 
+git add Dockerfile
+git commit -m "Add Dockerfile for Render"
+git push origin main
