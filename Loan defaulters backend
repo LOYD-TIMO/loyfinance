@@ -1,0 +1,5 @@
+mkdir person-search
+cd person-search
+npm init -y
+npm install express sqlite3 cors
+Commit new file [Initialize person-search setup]
