@@ -3,3 +3,68 @@ cd person-search
 npm init -y
 npm install express sqlite3 cors
 Commit new file [Initialize person-search setup]
+
+// server.js
+const express = require('express');
+const sqlite3 = require('sqlite3').verbose();
+const cors = require('cors');
+const path = require('path');
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Database file (created automatically if missing)
+const dbFile = path.join(__dirname, 'people.db');
+const db = new sqlite3.Database(dbFile);
+
+// Create table if not exists
+db.run(`CREATE TABLE IF NOT EXISTS people(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
+  bio TEXT,
+  email TEXT,
+  photo_url TEXT
+)`);
+
+// Search endpoint
+app.get('/api/search', (req, res) => {
+  const q = (req.query.q || '').toLowerCase();
+  if (!q) return res.json({ results: [] });
+
+  const sql = `SELECT id, name, bio, email, photo_url AS photo
+               FROM people
+               WHERE LOWER(name) LIKE ? LIMIT 50`;
+  db.all(sql, [`%${q}%`], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ results: rows });
+  });
+});
+
+// Optional: add new people (for testing)
+app.post('/api/add', (req, res) => {
+  const { name, bio, email, photo_url } = req.body;
+  db.run(
+    'INSERT INTO people(name,bio,email,photo_url) VALUES(?,?,?,?)',
+    [name, bio, email, photo_url],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: this.lastID });
+    }
+  );
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+node
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('people.db');
+db.run('INSERT INTO people(name,bio,email,photo_url) VALUES (?,?,?,?)',
+  ['John Doe','Software engineer at ExampleCo','john@example.com','https://via.placeholder.com/100']);
+db.run('INSERT INTO people(name,bio,email,photo_url) VALUES (?,?,?,?)',
+  ['Jane Smith','Graphic designer from NY','jane@example.com','https://via.placeholder.com/100']);
+db.close();
+
+node server.js
+{"results":[{"id":2,"name":"Jane Smith","bio":"Graphic designer from NY","email":"jane@example.com","photo":"https://via.placeholder.com/100"}]}
+Commit new file [Initialize person-search setup]
