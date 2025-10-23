@@ -89,4 +89,27 @@ git commit -m "Initial backend setup"
 git branch -M main
 git remote add origin https://github.com/YOUR-USERNAME/person-search.git
 git push -u origin main
+# Use an official Node.js runtime as a parent image
+FROM node:18
 
+# Set working directory
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the app
+COPY . .
+
+# Build (if needed)
+RUN npm run build
+
+# Expose the port Render should use
+EXPOSE 10000
+
+# Command to run the app
+CMD ["npm", "start"]
+git add Dockerfile
+git commit -m "Add Dockerfile for Render deployment"
+git push
