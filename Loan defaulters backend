@@ -1,10 +1,10 @@
-mkdir person-search
-cd person-search
-npm init -y
-npm install express sqlite3 cors
-Commit new file [Initialize person-search setup]
-
-// server.js
+person-search/       (or directly in your repo root)
+├── server.js
+├── package.json
+├── package-lock.json
+├── .gitignore
+├── seed.js         (optional, for inserting test data)
+└── README.md       (optional)
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
@@ -14,7 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Database file (created automatically if missing)
+// Database file
 const dbFile = path.join(__dirname, 'people.db');
 const db = new sqlite3.Database(dbFile);
 
@@ -41,7 +41,7 @@ app.get('/api/search', (req, res) => {
   });
 });
 
-// Optional: add new people (for testing)
+// Optional: add new people
 app.post('/api/add', (req, res) => {
   const { name, bio, email, photo_url } = req.body;
   db.run(
@@ -56,27 +56,37 @@ app.post('/api/add', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-node
+{
+  "name": "person-search",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.2",
+    "cors": "^2.8.5"
+  }
+}
+node_modules/
+people.db
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('people.db');
+
 db.run('INSERT INTO people(name,bio,email,photo_url) VALUES (?,?,?,?)',
   ['John Doe','Software engineer at ExampleCo','john@example.com','https://via.placeholder.com/100']);
 db.run('INSERT INTO people(name,bio,email,photo_url) VALUES (?,?,?,?)',
   ['Jane Smith','Graphic designer from NY','jane@example.com','https://via.placeholder.com/100']);
-db.close();
 
-node server.js
-{"results":[{"id":2,"name":"Jane Smith","bio":"Graphic designer from NY","email":"jane@example.com","photo":"https://via.placeholder.com/100"}]}
-person-search/
-├── server.js
-├── package.json
-├── package-lock.json
-├── people.db
-└── README.md (optional)
+db.close();
+node seed.js
+# Person Search API
+A simple Node.js + Express + SQLite backend for searching people.
 git init
 git add .
-git commit -m "Initialize person-search setup"
+git commit -m "Initial backend setup"
 git branch -M main
 git remote add origin https://github.com/YOUR-USERNAME/person-search.git
 git push -u origin main
-Commit new file [Initialize person-search setup]
+
