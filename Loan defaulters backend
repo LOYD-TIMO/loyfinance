@@ -1,10 +1,41 @@
-person-search/       (or directly in your repo root)
+person-search/
 ├── server.js
 ├── package.json
-├── package-lock.json
 ├── .gitignore
-├── seed.js         (optional, for inserting test data)
-└── README.md       (optional)
+├── people.db              # optional, will be created automatically
+├── seed.js                # optional test data
+└── Dockerfile             # 🔥 add this file
+# Use Node.js 18 LTS image
+FROM node:18
+
+# Set working directory inside container
+WORKDIR /app
+
+# Copy package files first and install dependencies
+COPY package*.json ./
+RUN npm install --production
+
+# Copy the rest of the app
+COPY . .
+
+# Expose the port Render will use
+EXPOSE 10000
+
+# Start the server
+CMD ["npm", "start"]
+{
+  "name": "person-search",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.2",
+    "cors": "^2.8.5"
+  }
+}
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
@@ -54,62 +85,12 @@ app.post('/api/add', (req, res) => {
   );
 });
 
+// Use Render’s PORT environment variable (default to 3000 locally)
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-{
-  "name": "person-search",
-  "version": "1.0.0",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "express": "^4.18.2",
-    "sqlite3": "^5.1.2",
-    "cors": "^2.8.5"
-  }
-}
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 node_modules/
 people.db
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('people.db');
-
-db.run('INSERT INTO people(name,bio,email,photo_url) VALUES (?,?,?,?)',
-  ['John Doe','Software engineer at ExampleCo','john@example.com','https://via.placeholder.com/100']);
-db.run('INSERT INTO people(name,bio,email,photo_url) VALUES (?,?,?,?)',
-  ['Jane Smith','Graphic designer from NY','jane@example.com','https://via.placeholder.com/100']);
-
-db.close();
-node seed.js
-# Person Search API
-A simple Node.js + Express + SQLite backend for searching people.
-git init
 git add .
-git commit -m "Initial backend setup"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/person-search.git
-git push -u origin main
-# Use an official Node.js runtime as a parent image
-FROM node:18
-
-# Set working directory
-WORKDIR /app
-
-# Copy package files and install dependencies
-COPY package*.json ./
-RUN npm install
-
-# Copy the rest of the app
-COPY . .
-
-# Build (if needed)
-RUN npm run build
-
-# Expose the port Render should use
-EXPOSE 10000
-
-# Command to run the app
-CMD ["npm", "start"]
-git add Dockerfile
-git commit -m "Add Dockerfile for Render deployment"
+git commit -m "Add Dockerfile for Render"
 git push
+
