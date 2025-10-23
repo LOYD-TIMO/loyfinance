@@ -67,4 +67,16 @@ db.close();
 
 node server.js
 {"results":[{"id":2,"name":"Jane Smith","bio":"Graphic designer from NY","email":"jane@example.com","photo":"https://via.placeholder.com/100"}]}
+person-search/
+├── server.js
+├── package.json
+├── package-lock.json
+├── people.db
+└── README.md (optional)
+git init
+git add .
+git commit -m "Initialize person-search setup"
+git branch -M main
+git remote add origin https://github.com/YOUR-USERNAME/person-search.git
+git push -u origin main
 Commit new file [Initialize person-search setup]
